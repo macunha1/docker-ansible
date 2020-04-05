@@ -1,10 +1,11 @@
-FROM ubuntu:18.04
+FROM "debian:9"
 
 RUN apt-get update -y && \
     apt-get install --fix-missing && \
     DEBIAN_FRONTEND=noninteractive apt-get install -y \
         sudo curl gcc libffi-dev libssl-dev \
         python python-pip python-dev python-yaml \
+        openjdk-8-jre \
         sshpass openssh-client && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/* /tmp/*

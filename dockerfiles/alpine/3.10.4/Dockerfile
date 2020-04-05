@@ -1,14 +1,12 @@
-FROM "alpine:3.11.5"
+FROM "alpine:3.10.4"
 
 RUN apk --update --no-cache add sudo \
         openssl ca-certificates \
         libffi-dev openssl-dev build-base \
-        python3-dev python3 py3-pip \
+        python-dev python py-pip \
+        openjdk8-jre-base \
         openssh-client rsync sshpass && \
-    ln -s $(which python3) $(dirname $(which python3))/python && \
-    ln -s $(which python3) /usr/local/bin/python && \
-    pip3 install -U pip && \
-    pip install -U pip cffi pycrypto pywinrm && \
+    pip install -U pip cffi pywinrm && \
     pip install ansible==2.5.15 && \
     # Adding hosts for convenience
     mkdir -p /etc/ansible && \

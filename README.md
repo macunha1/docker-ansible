@@ -1,8 +1,15 @@
-Docker-Ansible base images
-==========================
+# Dockerized Ansible images
 
-[![Circle CI](https://circleci.com/gh/macunha1/docker-ansible.svg?style=shield)](https://circleci.com/gh/macunha1/docker-ansible)
-
+<p align="center">
+    <a href="https://hub.docker.com/r/macunha1/ansible/builds" alt="Docker Cloud Build Status">
+        <img src="https://img.shields.io/docker/cloud/build/macunha1/ansible" /></a>
+    <a href="https://hub.docker.com/r/macunha1/ansible" alt="Docker Pulls">
+        <img src="https://img.shields.io/docker/pulls/macunha1/ansible" /></a>
+    <a href="https://github.com/macunha1/docker-ansible/pulls" alt="GitHub pull requests">
+        <img src="https://img.shields.io/github/issues-pr-raw/macunha1/docker-ansible"></a>
+    <a href="https://github.com/macunha1/docker-ansible/issues" alt="GitHub issues">
+        <img src="https://img.shields.io/github/issues-raw/macunha1/docker-ansible"></a>
+</p>
 
 ## Summary
 
@@ -10,41 +17,34 @@ Repository name in Docker Hub: **[macunha1/ansible](https://hub.docker.com/r/mac
 
 This repository contains Dockerized [Ansible](https://github.com/ansible/ansible), published to the public [Docker Hub](https://hub.docker.com/) via **automated build** mechanism.
 
-These are Docker images for  software, installed in a selected Linux distributions.
+These are Docker images for software, installed in a selected Linux distributions.
 
 ### Base OS
 
-Debian (stretch, jessie), Ubuntu (bionic, xenial, trusty), CentOS (7), Alpine (3).
+Debian: 8 (jessie), 9 (stretch), 10 (buster).
 
-Supports for Wheezy, Precise, and CentOS6 have been ended since Sep 2017.
+Ubuntu: 14.04, 16.04, 18.04, 20.04. Only LTS versions.
+
+CentOS 6 and 7
+
+Alpine 3.8, 3.9, 3.10, 3.11
+
+*Pending:* OpenSUSE and Fedora.
 
 ### Ansible
 
-Ansible installation command will defaults to the last available package at the index.
+Ansible will be installed with the version specified on [config](config.yaml).
+All Docker images had Ansible installed through `pip`.
 
-Distros like Debian and Ubuntu has Ansible on the default Apt indexes, meanwhile the others will simply use pip to install Ansible.
-
-To make sure the Ansible version installed on container during execution of tests or playbooks, enforces a `pip install ansible==$DESIRED_VERSION`
-
-## Images and tags
-
-### Stable version (installed from official PyPI repo):
-
-  - `macunha1/ansible:debian9`
-  - `macunha1/ansible:debian8`
-  - `macunha1/ansible:ubuntu18.04`
-  - `macunha1/ansible:ubuntu16.04`
-  - `macunha1/ansible:ubuntu14.04`
-  - `macunha1/ansible:centos7`
-  - `macunha1/ansible:alpine3`
+To make sure the right version of Ansible is installed on container during execution of
+tests, run a `pip install ansible==$DESIRED_VERSION`.
 
 ## For the impatient
 
 Here comes a simplest working example:
 
-
 ```docker
-FROM macunha1/ansible:opensuse42
+FROM macunha1/ansible:alpine-3.11.5
 
 RUN pip install ansible==2.3.4
 
@@ -55,16 +55,37 @@ CMD ["-i", "inventory/awesome", "playbook.yml"]
 Then,
 
 ```bash
-docker build -t awesome/docker-ansible:opensuse /path/to/Dockerfile
+docker build -t awesome/docker-ansible:tag /path/to/Dockerfile
 ```
 
-Done!
+Enjoy your Ansible image.
+
+### For the even more impatient
+
+If you want to go directly to the point, without building your own custom image,
+just run:
+
+```bash
+docker run -it --name awesome-ansible-container \
+  -v ${HOME}/.ssh:/root/.ssh:ro \
+  # ... additional configurations
+  macunha1/ansible:alpine-3.11.5 \
+  -- -i inventory/awesome playbook.yml
+```
 
 ## Why yet another Ansible image for Docker?
 
 There has been quite a few Ansible images for Docker (e.g., [search](https://hub.docker.com/search/?isAutomated=1&isOfficial=0&page=1&pullCount=0&q=ansible&starCount=0) in the Docker Hub), so why reinvent the wheel?
 
 Simply, because most of them seems to be abadoned. Even the base of this fork [from William Yeh](https://github.com/William-Yeh/docker-ansible)
+
+### Motivation
+
+This repository was first created to give [Confluent Kafka role](https://app.circleci.com/pipelines/github/macunha1/confluent-kafka-role?branch=feature%2Fversion-update)
+a proper test suite. Previously, public images gave me a lot of issues, and I got tired of making workarounds to have a CI working for my roles.
+
+If you're tired too of looking around and not finding what you need, join me and
+use these Docker images. Feel free to open issues and send PR, I will be happy to colaborate.
 
 ## Use cases
 

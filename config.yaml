@@ -1,0 +1,29 @@
+---
+java:
+  enabled: true
+
+python3:
+  enabled: false
+
+ansible:
+  version: 2.5.15
+
+distros:
+  alpine:
+    template: alpine
+    versions:
+      - 3.11.5
+      - 3.10.4
+      - 3.9.5
+      - 3.8.5
+  debian:
+    template: debian
+    versions:
+      - 9
+      - 10
+  ubuntu:
+    template: debian
+    versions:
+      - 16.04
+      - 18.04
+      - 20.04
