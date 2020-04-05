@@ -1,4 +1,4 @@
-FROM debian:jessie
+FROM debian:buster
 
 RUN apt-get update -y && \
     apt-get install --fix-missing && \
@@ -6,8 +6,7 @@ RUN apt-get update -y && \
         sudo curl gcc libffi-dev libssl-dev \
         python python-pip python-dev python-yaml && \
     apt-get -y --purge remove python-cffi && \
-    pip install -U setuptools pycrypto cffi pywinrm && \
-    easy_install -U pip && \
+    pip install -U pip pycrypto cffi pywinrm && \
     pip install ansible==2.5.15 && \
     apt-get install -y sshpass openssh-client && \
     apt-get clean && \
