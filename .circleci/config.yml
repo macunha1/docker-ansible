@@ -1,0 +1,44 @@
+version: 2
+jobs:
+  build_stable:
+    docker:
+      - image: docker:18.06.1-ce
+    steps:
+      - checkout
+      #- setup_remote_docker:
+      #    docker_layer_caching: true
+      - run:
+          name: build application docker image
+          command: |
+            docker build  -t ansible_bionic           ubuntu18.04
+            docker build  -t ansible_xenial           ubuntu16.04
+            docker build  -t ansible_trusty           ubuntu14.04
+            docker build  -t ansible_stretch          debian9
+            docker build  -t ansible_jessie           debian8
+            docker build  -t ansible_centos7          centos7
+            docker build  -t ansible_alpine3          alpine3
+
+      - run:
+          name: Validating the test results
+          command: |
+            docker run -i ansible_bionic           > result-ubuntu18.04
+            docker run -i ansible_xenial           > result-ubuntu16.04
+            docker run -i ansible_trusty           > result-ubuntu14.04
+            docker run -i ansible_stretch          > result-debian9
+            docker run -i ansible_jessie           > result-debian8
+            docker run -i ansible_centos7          > result-centos7
+            docker run -i ansible_alpine3          > result-alpine3
+
+            sh -c "[ -s result-ubuntu18.04         ]"
+            sh -c "[ -s result-ubuntu16.04         ]"
+            sh -c "[ -s result-ubuntu14.04         ]"
+            sh -c "[ -s result-debian9             ]"
+            sh -c "[ -s result-debian8             ]"
+            sh -c "[ -s result-centos7             ]"
+            sh -c "[ -s result-alpine3             ]"
+
+workflows:
+  version: 2
+  build_and_test:
+    jobs:
+      - build_stable
