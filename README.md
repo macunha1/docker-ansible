@@ -15,9 +15,8 @@
 
 Repository name in Docker Hub: **[macunha1/ansible](https://hub.docker.com/r/macunha1/ansible/)**
 
-This repository contains Dockerized [Ansible](https://github.com/ansible/ansible), published to the public [Docker Hub](https://hub.docker.com/) via **automated build** mechanism.
-
-These are Docker images for software, installed in a selected Linux distributions.
+This repository contains Dockerized [Ansible](https://github.com/ansible/ansible), i.e. docker images for creating containers with Ansible installed.
+Images are published to the public [Docker Hub](https://hub.docker.com/) via **automated build** mechanism (builds run on Docker Hub infrastructure).
 
 ### Base OS
 
@@ -55,7 +54,7 @@ CMD ["-i", "inventory/awesome", "playbook.yml"]
 Then,
 
 ```bash
-docker build -t awesome/docker-ansible:tag /path/to/Dockerfile
+docker build -f /path/to/Dockerfile -t awesome/docker-ansible:tag /any/build/context
 ```
 
 Enjoy your Ansible image.

@@ -6,7 +6,7 @@ python3:
   enabled: false
 
 ansible:
-  version: 2.5.15
+  version: 2.9.6
 
 distros:
   alpine:
@@ -26,4 +26,5 @@ distros:
     versions:
       - 16.04
       - 18.04
-      - 20.04
+      # 20.04 isn't ready for automation
+      # - 20.04 # Python2 was deprecated
