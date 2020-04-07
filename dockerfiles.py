@@ -25,27 +25,33 @@ def main():
     config = load_config()
     distros = config.get("distros")
 
-    for distro_name in distros.keys():
-        distro = distros.get(distro_name)
-        for distro_version in distro.get("versions"):
-            rendered_dockerfile = render_dockerfile(
-                values={"image_version": distro_version,
-                        **config,
-                        "distro": distro_name},
-                distro_template=distro.get("template"),
-            )
+    # TODO: List expression to build the names, Lambda and map()
+    #   These nested loops aren't nice
+    for distro_name, distro in distros.items():
+        for variant, variant_values in distro.items():
+            for distro_version in variant_values.get("versions"):
+                rendered_dockerfile = render_dockerfile(
+                    values={"image_version": distro_version,
+                            **variant_values,
+                            "ansible": config.get("ansible"),
+                            "distro": distro_name},
+                    distro_template=variant_values.get("template"),
+                )
 
-            distro_path = path.join(PWD,
-                                    "dockerfiles",
-                                    distro_name,
-                                    str(distro_version))
+                distro_variant_name = "%s-%s" % (variant,
+                                                 distro_name)
 
-            if not path.exists(distro_path):
-                makedirs(distro_path)
+                distro_path = path.join(PWD,
+                                        "dockerfiles",
+                                        distro_variant_name,
+                                        str(distro_version))
 
-            with open(path.join(distro_path, "Dockerfile"),
-                      "w+") as dockerfile:
-                dockerfile.write(rendered_dockerfile)
+                if not path.exists(distro_path):
+                    makedirs(distro_path)
+
+                with open(path.join(distro_path, "Dockerfile"),
+                          "w+") as dockerfile:
+                    dockerfile.write(rendered_dockerfile)
 
 
 if __name__ == "__main__":

@@ -1,30 +1,89 @@
 ---
-java:
-  enabled: true
-
-python3:
-  enabled: false
-
 ansible:
   version: 2.9.6
 
-distros:
-  alpine:
-    template: alpine
+defaults:
+  alpine: &alpineDefaults
     versions:
       - 3.11.5
       - 3.10.4
       - 3.9.5
       - 3.8.5
-  debian:
-    template: debian
+    java:
+      enabled: false
+    python3:
+      enabled: false
+  debian: &debianDefaults
     versions:
+      - 8
       - 9
       - 10
-  ubuntu:
-    template: debian
+    java:
+      enabled: false
+    python3:
+      enabled: false
+  ubuntu: &ubuntuDefaults
     versions:
       - 16.04
       - 18.04
-      # 20.04 isn't ready for automation
-      # - 20.04 # Python2 was deprecated
+    java:
+      enabled: false
+    python3:
+      enabled: false
+
+distros:
+  # Python 2 images
+  alpine:
+    py2:
+      template: alpine
+      <<: *alpineDefaults
+    py3:
+      template: alpine
+      python3:
+        enabled: true
+      <<: *alpineDefaults
+    java:
+      template: alpine
+      java:
+        enabled: true
+      <<: *alpineDefaults
+
+  debian:
+    py2:
+      template: debian
+      <<: *debianDefaults
+    py3:
+      template: debian
+      python3:
+        enabled: true
+      <<: *debianDefaults
+    java:
+      template: debian
+      java:
+        enabled: true
+      <<: *debianDefaults
+
+  ubuntu:
+    py2:
+      template: debian
+      <<: *ubuntuDefaults
+    py3:
+      template: debian
+      <<: *ubuntuDefaults
+      python3:
+        enabled: true
+      versions:
+        - 16.04
+        - 18.04
+        - 20.04
+    java:
+      template: debian
+      <<: *ubuntuDefaults
+      java:
+        enabled: true
+      python3:
+        enabled: true
+      versions:
+        - 16.04
+        - 18.04
+        - 20.04
