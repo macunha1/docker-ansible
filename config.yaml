@@ -57,6 +57,9 @@ distros:
       python3:
         enabled: true
       <<: *debianDefaults
+      versions:
+        - 9
+        - 10
     java:
       template: debian
       java:

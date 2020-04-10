@@ -25,10 +25,8 @@ def main():
     config = load_config()
     distros = config.get("distros")
 
-    # TODO: List expression to build the names, Lambda and map()
-    #   These nested loops aren't nice
-    for distro_name, distro in distros.items():
-        for variant, variant_values in distro.items():
+    for distro_name, distro_values in distros.items():
+        for variant_name, variant_values in distro_values.items():
             for distro_version in variant_values.get("versions"):
                 rendered_dockerfile = render_dockerfile(
                     values={"image_version": distro_version,
@@ -38,12 +36,10 @@ def main():
                     distro_template=variant_values.get("template"),
                 )
 
-                distro_variant_name = "%s-%s" % (variant,
-                                                 distro_name)
-
                 distro_path = path.join(PWD,
                                         "dockerfiles",
-                                        distro_variant_name,
+                                        distro_name,
+                                        variant_name,
                                         str(distro_version))
 
                 if not path.exists(distro_path):

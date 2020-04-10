@@ -1,0 +1,27 @@
+FROM "{{ distro }}:{{ image_version }}"
+
+{% block os_packages -%}{% endblock %}
+
+# Python configuration layer
+RUN {% if python3.enabled -%}
+    [ -f "$(dirname $(which python3))/python" ] || \
+    # If there's no python installed on the default path, use python3
+    ln -s $(which python3) $(dirname $(which python3))/python && \
+    ln -s $(which python3) /usr/local/bin/python && \
+    pip3 install -U pip && \
+    command -v pip >/dev/null || \
+    # Same fallback for pip. No pip on default path == use pip3
+    ln -s $(which pip3) $(dirname $(which pip3))/pip && \
+{%- else -%}
+    EASY_INSTALL=$(command -v easy_install || \
+        echo "$(which pip) install") && \
+    $EASY_INSTALL -U pip && \
+{%- endif %}
+    pip install -U setuptools pyopenssl && \
+    pip install -U --ignore-installed cffi pywinrm && \
+    pip install ansible=={{ ansible.version }} && \
+    # Adding Ansible hosts for convenience
+    mkdir -p /etc/ansible && \
+    echo 'localhost' > /etc/ansible/hosts
+
+ENTRYPOINT [ "ansible-playbook" ]
