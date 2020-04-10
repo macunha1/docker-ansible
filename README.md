@@ -94,4 +94,4 @@ If better OS emulation (virtualization) isn't required, the Docker approach (con
 
 ## License
 
-Licensed under the Apache License V2.0. See the [LICENSE file](LICENSE) for details.
+Unlicensed under the [UNLICENSE](UNLICENSE). See [the Unlicense.org](https://unlicense.org/) for details.
