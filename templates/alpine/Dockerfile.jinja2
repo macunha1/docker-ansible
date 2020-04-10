@@ -1,5 +1,6 @@
-FROM "{{ distro | default('alpine') }}:{{ image_version }}"
+{%- extends "base/Dockerfile.jinja2" -%}
 
+{%- block os_packages -%}
 RUN apk --update --no-cache add sudo \
         openssl ca-certificates bash \
         tar gzip iproute2 \
@@ -13,18 +14,4 @@ RUN apk --update --no-cache add sudo \
         openjdk8-jre-base \
 {%- endif %}
         openssh-client rsync sshpass
-
-# Python configuration layer
-RUN {% if python3.enabled -%}
-    ln -s $(which python3) $(dirname $(which python3))/python && \
-    ln -s $(which python3) /usr/local/bin/python && \
-    pip3 install -U pip && \
-{%- endif %}
-    pip install -U pip && \
-    pip install -U cffi pywinrm && \
-    pip install ansible=={{ ansible.version }} && \
-    # Adding hosts for convenience
-    mkdir -p /etc/ansible && \
-    echo 'localhost' > /etc/ansible/hosts
-
-ENTRYPOINT [ "ansible-playbook" ]
+{%- endblock %}

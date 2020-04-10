@@ -25,27 +25,29 @@ def main():
     config = load_config()
     distros = config.get("distros")
 
-    for distro_name in distros.keys():
-        distro = distros.get(distro_name)
-        for distro_version in distro.get("versions"):
-            rendered_dockerfile = render_dockerfile(
-                values={"image_version": distro_version,
-                        **config,
-                        "distro": distro_name},
-                distro_template=distro.get("template"),
-            )
+    for distro_name, distro_values in distros.items():
+        for variant_name, variant_values in distro_values.items():
+            for distro_version in variant_values.get("versions"):
+                rendered_dockerfile = render_dockerfile(
+                    values={"image_version": distro_version,
+                            **variant_values,
+                            "ansible": config.get("ansible"),
+                            "distro": distro_name},
+                    distro_template=variant_values.get("template"),
+                )
 
-            distro_path = path.join(PWD,
-                                    "dockerfiles",
-                                    distro_name,
-                                    str(distro_version))
+                distro_path = path.join(PWD,
+                                        "dockerfiles",
+                                        distro_name,
+                                        variant_name,
+                                        str(distro_version))
 
-            if not path.exists(distro_path):
-                makedirs(distro_path)
+                if not path.exists(distro_path):
+                    makedirs(distro_path)
 
-            with open(path.join(distro_path, "Dockerfile"),
-                      "w+") as dockerfile:
-                dockerfile.write(rendered_dockerfile)
+                with open(path.join(distro_path, "Dockerfile"),
+                          "w+") as dockerfile:
+                    dockerfile.write(rendered_dockerfile)
 
 
 if __name__ == "__main__":
