@@ -11,6 +11,7 @@ RUN apt-get update -y && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/* /tmp/*
 
+# Python configuration layer
 RUN EASY_INSTALL=$(command -v easy_install || \
         echo "$(which pip) install") && \
     $EASY_INSTALL -U pip && \

@@ -1,12 +1,15 @@
 FROM "alpine:3.10.4"
 
 RUN apk --update --no-cache add sudo \
-        openssl ca-certificates \
+        openssl ca-certificates bash \
         tar gzip iproute2 \
         libffi-dev openssl-dev build-base \
         python-dev python py-pip \
         openjdk8-jre-base \
-        openssh-client rsync sshpass && \
+        openssh-client rsync sshpass
+
+# Python configuration layer
+RUN 
     pip install -U pip && \
     pip install -U cffi pywinrm && \
     pip install ansible==2.9.6 && \

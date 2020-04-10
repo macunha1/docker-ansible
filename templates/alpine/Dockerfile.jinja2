@@ -1,7 +1,7 @@
 FROM "{{ distro | default('alpine') }}:{{ image_version }}"
 
 RUN apk --update --no-cache add sudo \
-        openssl ca-certificates \
+        openssl ca-certificates bash \
         tar gzip iproute2 \
         libffi-dev openssl-dev build-base \
 {%- if python3.enabled %}
@@ -12,8 +12,10 @@ RUN apk --update --no-cache add sudo \
 {%- if java.enabled %}
         openjdk8-jre-base \
 {%- endif %}
-        openssh-client rsync sshpass && \
-{%- if python3.enabled %}
+        openssh-client rsync sshpass
+
+# Python configuration layer
+RUN {% if python3.enabled -%}
     ln -s $(which python3) $(dirname $(which python3))/python && \
     ln -s $(which python3) /usr/local/bin/python && \
     pip3 install -U pip && \
